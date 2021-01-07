@@ -3,8 +3,9 @@ require 'minitest/pride'
 require './lib/patron'
 require './lib/museum'
 require './lib/exhibit'
+require 'mocha/minitest'
 
-class Test < Minitest::Test
+class MuseumTest < Minitest::Test
 
   def setup
     @dmns = Museum.new("Denver Museum of Nature and Science")
@@ -49,19 +50,19 @@ class Test < Minitest::Test
     assert_equal [@patron_1, @patron_2, @patron_3], @dmns.patrons
   end
 
-  # def test_patrons_interets
-  #   @dmns.admit(@patron_1)
-  #   @dmns.admit(@patron_2)
-  #   @dmns.admit(@patron_3)
-  #   @patron_1.add_interest("Dead Sea Scrolls")
-  #   @patron_1.add_interest("Gems and Minerals")
-  #   @patron_2.add_interest("Dead Sea Scrolls")
-  #   @patron_3.add_interest("Dead Sea Scrolls")
-  #   @dmns.add_exhibit(@gems_and_minerals)
-  #   @dmns.add_exhibit(@dead_sea_scrolls)
-  #   @dmns.add_exhibit(@imax)
-  #   assert_equal [@patron_1], @dmns.patron_interests
-  # end
+  def test_patrons_interets
+    @dmns.admit(@patron_1)
+    @dmns.admit(@patron_2)
+    @dmns.admit(@patron_3)
+    @patron_1.add_interest("Dead Sea Scrolls")
+    @patron_1.add_interest("Gems and Minerals")
+    @patron_2.add_interest("Dead Sea Scrolls")
+    @patron_3.add_interest("Dead Sea Scrolls")
+    @dmns.add_exhibit(@gems_and_minerals)
+    @dmns.add_exhibit(@dead_sea_scrolls)
+    @dmns.add_exhibit(@imax)
+    assert_equal [@patron_1], @dmns.patron_interests(@gems_and_minerals)
+  end
 
   def test_patrons_by_exhibit_interest
     @dmns.admit(@patron_1)
@@ -108,7 +109,26 @@ class Test < Minitest::Test
     @dmns.add_exhibit(@gems_and_minerals)
     @dmns.add_exhibit(@dead_sea_scrolls)
     @dmns.add_exhibit(@imax)
+    johnny = mock
+    johnny.expects(name).returns("Johnny")
+
     assert_equal nil, @dmns.draw_lottery_winner(@gems_and_minerals)
-    assert_equal "Johnny", @dmns.draw_lottery_winner(@dead_sea_scrolls)
+    assert_equal johnny, @dmns.draw_lottery_winner(@dead_sea_scrolls)
+  end
+
+  def test_announce_lottery_winnner
+    patron_1 = Patron.new("Bob", 0)
+    @dmns.admit(patron_1)
+    @dmns.admit(@patron_2)
+    @dmns.admit(@patron_3)
+    patron_1.add_interest("Dead Sea Scrolls")
+    patron_1.add_interest("Gems and Minerals")
+    @patron_2.add_interest("Dead Sea Scrolls")
+    @patron_3.add_interest("Dead Sea Scrolls")
+    @dmns.add_exhibit(@gems_and_minerals)
+    @dmns.add_exhibit(@dead_sea_scrolls)
+    @dmns.add_exhibit(@imax)
+    assert_equal "Bob has won the IMAX exhibit lottery", @dmns.announce_lottery_winner(@imax)
+    assert_equal "No winners for this lottery", @dmns.announce_lottery_winner(@gems_and_minerals)
   end
 end
