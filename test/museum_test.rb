@@ -113,7 +113,9 @@ class MuseumTest < Minitest::Test
     johnny.expects(name).returns("Johnny")
 
     assert_equal nil, @dmns.draw_lottery_winner(@gems_and_minerals)
+    # @dmns.stub(:draw_lottery_winner).returns("Jonny")
     assert_equal johnny, @dmns.draw_lottery_winner(@dead_sea_scrolls)
+
   end
 
   def test_announce_lottery_winnner
