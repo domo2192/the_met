@@ -49,6 +49,20 @@ class Test < Minitest::Test
     assert_equal [@patron_1, @patron_2, @patron_3], @dmns.patrons
   end
 
+  # def test_patrons_interets
+  #   @dmns.admit(@patron_1)
+  #   @dmns.admit(@patron_2)
+  #   @dmns.admit(@patron_3)
+  #   @patron_1.add_interest("Dead Sea Scrolls")
+  #   @patron_1.add_interest("Gems and Minerals")
+  #   @patron_2.add_interest("Dead Sea Scrolls")
+  #   @patron_3.add_interest("Dead Sea Scrolls")
+  #   @dmns.add_exhibit(@gems_and_minerals)
+  #   @dmns.add_exhibit(@dead_sea_scrolls)
+  #   @dmns.add_exhibit(@imax)
+  #   assert_equal [@patron_1], @dmns.patron_interests
+  # end
+
   def test_patrons_by_exhibit_interest
     @dmns.admit(@patron_1)
     @dmns.admit(@patron_2)
@@ -60,9 +74,25 @@ class Test < Minitest::Test
     @dmns.add_exhibit(@gems_and_minerals)
     @dmns.add_exhibit(@dead_sea_scrolls)
     @dmns.add_exhibit(@imax)
-    expected = {@exhibit_1 => [@patron_1],
-                @exhibit_2 => [@patron_1, @patron_2, @patron_3]}
-    assert_equal expected, @dmns.patrons_by_exhibit_interest 
+    expected = {@gems_and_minerals=> [@patron_1],
+                @dead_sea_scrolls => [@patron_1, @patron_2, @patron_3],
+                @imax => []}
+    assert_equal expected, @dmns.patrons_by_exhibit_interest
+  end
+
+  def test_ticket_lottery_contestants
+    @dmns.admit(@patron_1)
+    @dmns.admit(@patron_2)
+    @dmns.admit(@patron_3)
+    @patron_1.add_interest("Dead Sea Scrolls")
+    @patron_1.add_interest("Gems and Minerals")
+    @patron_2.add_interest("Dead Sea Scrolls")
+    @patron_3.add_interest("Dead Sea Scrolls")
+    @dmns.add_exhibit(@gems_and_minerals)
+    @dmns.add_exhibit(@dead_sea_scrolls)
+    @dmns.add_exhibit(@imax)
+    assert_equal [@patron_3, @patron_1], @dmns.ticket_lottery_contestants(@dead_sea_scrolls)
+
   end
 
 end
