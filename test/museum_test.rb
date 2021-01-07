@@ -23,7 +23,7 @@ class Test < Minitest::Test
     @dmns.add_exhibit(@gems_and_minerals)
     @dmns.add_exhibit(@dead_sea_scrolls)
     @dmns.add_exhibit(@imax)
-    assert_equal [@gems_and_minerals, @dead_sea_scrolls, @imax], @dmns.interests 
+    assert_equal [@gems_and_minerals, @dead_sea_scrolls, @imax], @dmns.exhibits  
 
   end
 end
