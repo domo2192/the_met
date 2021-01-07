@@ -93,7 +93,22 @@ class Test < Minitest::Test
     @dmns.add_exhibit(@dead_sea_scrolls)
     @dmns.add_exhibit(@imax)
     assert_equal [patron_1, @patron_3], @dmns.ticket_lottery_contestants(@dead_sea_scrolls)
-    # changed patron_1 scope because his spending_money had changed 
+    # changed patron_1 scope because his spending_money had changed
   end
 
+  def test_draw_lottery_winner
+    patron_1 = Patron.new("Bob", 0)
+    @dmns.admit(patron_1)
+    @dmns.admit(@patron_2)
+    @dmns.admit(@patron_3)
+    patron_1.add_interest("Dead Sea Scrolls")
+    patron_1.add_interest("Gems and Minerals")
+    @patron_2.add_interest("Dead Sea Scrolls")
+    @patron_3.add_interest("Dead Sea Scrolls")
+    @dmns.add_exhibit(@gems_and_minerals)
+    @dmns.add_exhibit(@dead_sea_scrolls)
+    @dmns.add_exhibit(@imax)
+    assert_equal nil, @dmns.draw_lottery_winner(@gems_and_minerals)
+    assert_equal "Johnny", @dmns.draw_lottery_winner(@dead_sea_scrolls)
+  end
 end
