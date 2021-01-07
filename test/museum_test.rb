@@ -13,6 +13,7 @@ class Test < Minitest::Test
     @imax = Exhibit.new({name: "IMAX",cost: 15})
     @patron_1 = Patron.new("Bob", 20)
     @patron_2 = Patron.new("Sally", 20)
+    @patron_3 = Patron.new("Johnny", 5)
   end
 
   def test_it_exists_and_has_attributes
@@ -38,6 +39,30 @@ class Test < Minitest::Test
     @patron_2.add_interest("IMAX")
     assert_equal [@gems_and_minerals, @dead_sea_scrolls], @dmns.recommend_exhibits(@patron_1)
     assert_equal [@imax], @dmns.recommend_exhibits(@patron_2)
+  end
+
+  def test_patrons_are_held_by_museum_class
+    assert_equal [], @dmns.patrons
+    @dmns.admit(@patron_1)
+    @dmns.admit(@patron_2)
+    @dmns.admit(@patron_3)
+    assert_equal [@patron_1, @patron_2, @patron_3], @dmns.patrons
+  end
+
+  def test_patrons_by_exhibit_interest
+    @dmns.admit(@patron_1)
+    @dmns.admit(@patron_2)
+    @dmns.admit(@patron_3)
+    @patron_1.add_interest("Dead Sea Scrolls")
+    @patron_1.add_interest("Gems and Minerals")
+    @patron_2.add_interest("Dead Sea Scrolls")
+    @patron_3.add_interest("Dead Sea Scrolls")
+    @dmns.add_exhibit(@gems_and_minerals)
+    @dmns.add_exhibit(@dead_sea_scrolls)
+    @dmns.add_exhibit(@imax)
+    expected = {@exhibit_1 => [@patron_1],
+                @exhibit_2 => [@patron_1, @patron_2, @patron_3]}
+    assert_equal expected, @dmns.patrons_by_exhibit_interest 
   end
 
 end
