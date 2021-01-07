@@ -81,18 +81,19 @@ class Test < Minitest::Test
   end
 
   def test_ticket_lottery_contestants
-    @dmns.admit(@patron_1)
+    patron_1 = Patron.new("Bob", 0)
+    @dmns.admit(patron_1)
     @dmns.admit(@patron_2)
     @dmns.admit(@patron_3)
-    @patron_1.add_interest("Dead Sea Scrolls")
-    @patron_1.add_interest("Gems and Minerals")
+    patron_1.add_interest("Dead Sea Scrolls")
+    patron_1.add_interest("Gems and Minerals")
     @patron_2.add_interest("Dead Sea Scrolls")
     @patron_3.add_interest("Dead Sea Scrolls")
     @dmns.add_exhibit(@gems_and_minerals)
     @dmns.add_exhibit(@dead_sea_scrolls)
     @dmns.add_exhibit(@imax)
-    assert_equal [@patron_3, @patron_1], @dmns.ticket_lottery_contestants(@dead_sea_scrolls)
-
+    assert_equal [patron_1, @patron_3], @dmns.ticket_lottery_contestants(@dead_sea_scrolls)
+    # changed patron_1 scope because his spending_money had changed 
   end
 
 end
